@@ -1,3 +1,2 @@
 #!/bin/bash
-find . -empty -exec sh -c 'for f in "$@"; do echo "${f##*/}"; done' sh {} +
-
+find . -empty -print | rev | cut -d/ -f1 | rev
