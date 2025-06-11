@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Parses Apache logs and counts occurrences of IP + HTTP code pairs
+# Parses Apache logs and counts occurrences
 
-awk '{print $1, $9}' | sort | uniq -c | sort -nr
+awk '{print $1,$9}' apache-access.log | sort -V | uniq -c | sort -n | perl -e 'print reverse <>'
 
