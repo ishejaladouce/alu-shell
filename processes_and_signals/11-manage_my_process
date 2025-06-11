@@ -1,41 +1,27 @@
 #!/usr/bin/env bash
-# Init script to manage the manage_my_process script
-
-PIDFILE="/var/run/my_process.pid"
-PROCESS_SCRIPT="/full/path/to/alu-shell/processes_and_signals/manage_my_process"  # Replace with absolute path
-
-start() {
-  "$PROCESS_SCRIPT" &
-  echo $! > "$PIDFILE"
-  echo "manage_my_process started"
-}
-
-stop() {
-  if [ -f "$PIDFILE" ]; then
-    PID=$(cat "$PIDFILE")
-    kill "$PID" 2>/dev/null
-    rm -f "$PIDFILE"
-    echo "manage_my_process stopped"
-  else
-    echo "manage_my_process not running"
-  fi
-}
-
-restart() {
-  stop
-  start
-  echo "manage_my_process restarted"
-}
+# Script to manage the 'manage_my_process' background process
 
 case "$1" in
   start)
-    start
+    nohup ./manage_my_process > /dev/null 2>&1 &
+    echo $! > /var/run/my_process.pid
+    echo "manage_my_process started"
     ;;
   stop)
-    stop
+    if [ -f /var/run/my_process.pid ]; then
+      kill "$(cat /var/run/my_process.pid)" >/dev/null 2>&1
+      rm -f /var/run/my_process.pid
+    fi
+    echo "manage_my_process stopped"
     ;;
   restart)
-    restart
+    if [ -f /var/run/my_process.pid ]; then
+      kill "$(cat /var/run/my_process.pid)" >/dev/null 2>&1
+      rm -f /var/run/my_process.pid
+    fi
+    nohup ./manage_my_process > /dev/null 2>&1 &
+    echo $! > /var/run/my_process.pid
+    echo "manage_my_process restarted"
     ;;
   *)
     echo "Usage: manage_my_process {start|stop|restart}"
