@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Show all running processes with full info and history
+
+ps aux --forest
